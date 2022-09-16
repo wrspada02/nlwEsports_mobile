@@ -6,8 +6,16 @@ import { Heading } from '../../components/Heading';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './styles';
+import { Background } from '../../components/Background';
+import { useNavigation } from '@react-navigation/native';
 
 export function Home() {
+  const navigation = useNavigation();
+
+  function handleOpenGame({ id, title, bannerUrl } : GameCardProps) {
+    navigation.navigate('game', { id, title, bannerUrl });
+  }
+
   const [games, setGames] = useState<GameCardProps[]>([]);
 
   useEffect(() => {
@@ -17,29 +25,32 @@ export function Home() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image
-        source={logoImg}
-        style={styles.logo}
-      />
+    <Background>
+      <SafeAreaView style={styles.container}>
+        <Image
+          source={logoImg}
+          style={styles.logo}
+        />
 
-      <Heading
-        title='Encontre seu duo!'
-        subtitle='Selecione o game que deseja jogar...'
-      />
+        <Heading
+          title='Encontre seu duo!'
+          subtitle='Selecione o game que deseja jogar...'
+        />
 
-      <FlatList
-        data={games}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <GameCard
-            data={item}
-          />
-        )}
-        showsHorizontalScrollIndicator={false}
-        horizontal
-        contentContainerStyle={styles.contentList}
-      />
-    </SafeAreaView>
+        <FlatList
+          data={games}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <GameCard
+              data={item}
+              onPress={() => handleOpenGame(item)}
+            />
+          )}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          contentContainerStyle={styles.contentList}
+        />
+      </SafeAreaView>
+    </Background>
   );
 }
